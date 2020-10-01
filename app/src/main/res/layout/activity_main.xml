@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="viewstub.databinding.ViewModel"
+            />
+
+        <import
+            type="viewstub.databinding.ViewModel.State"
+            alias="State"
+            />
+
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:refreshing="@{viewModel.state == State.Loading.INSTANCE}"
+        app:onRefreshListener="@{() -> viewModel.loadData()}"
+        android:enabled="true"
+        >
+
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            >
+
+            <ViewStub
+                android:id="@+id/no_data_stub"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/no_data"
+                android:visibility="@{viewModel.state == State.Empty.INSTANCE}"
+                app:inflatedVisibility="@{viewModel.state == State.Empty.INSTANCE}"
+                />
+
+            <ViewStub
+                android:id="@+id/error_stub"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/error"
+                android:visibility="@{viewModel.state == State.Error.INSTANCE}"
+                app:inflatedVisibility="@{viewModel.state == State.Error.INSTANCE}"
+                app:onClick="@{viewModel.retryClickListener}"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewModel.state == State.Done.INSTANCE}"
+                >
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    app:layout_constraintWidth_percent="0.6"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintBottom_toTopOf="@id/textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_twotone_data_usage"
+                    android:tint="#2222BB22"
+                    />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Some data"
+                    android:textSize="36sp"
+                    android:textAlignment="center"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>
+
